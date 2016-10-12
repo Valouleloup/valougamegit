@@ -57,18 +57,30 @@ io.sockets.on('connection', function (socket, pseudo) {
         contentMessage = message.content;
 
         var gapMove = 2;
+        var minX = -12;
+        var maxX = 12;
+        var minY = -7;
+        var maxY = 7;
         switch(message.content){
             case 'Gauche':
-                socket.infos.positionX -= gapMove;
+                if(socket.infos.positionX > minX){
+                    socket.infos.positionX -= gapMove;
+                }
                 break;
             case 'Haut':
-                socket.infos.positionY += gapMove;
+                if(socket.infos.positionY < maxY){
+                    socket.infos.positionY += gapMove;
+                }
                 break;
             case 'Droite':
-                socket.infos.positionX += gapMove;
+                if(socket.infos.positionX < maxX){
+                    socket.infos.positionX += gapMove;
+                }
                 break;
             case 'Bas':
-                socket.infos.positionY -= gapMove;
+                if(socket.infos.positionY > minY){
+                    socket.infos.positionY -= gapMove;
+                }
                 break;
         }
 
