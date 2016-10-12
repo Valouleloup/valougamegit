@@ -17,18 +17,12 @@
 
         <header>
             <div class="center-cont">
-                <h1>Valou Game</h1>
+                <h1>Valou Game <span class="game-version">v0.3.1</span> </h1>
             </div>
         </header>
 
         <div id="player-scores">
             <div class="center-cont">
-                <div class="name-score">
-                    <p>Player1 <span class="show-score">1654</span></p>
-                </div>
-                <div class="name-score">
-                    <p>Player2 <span class="show-score">682</span></p>
-                </div>
             </div>
         </div>
 
@@ -62,22 +56,29 @@
             socket.emit('nouveau_client', pseudo);
             document.title = document.title + ' - ' + pseudo;
 
-            // 2.1 - Get nouveau player ; ajout dans threejs
-            socket.on('nouveau_client', function(newPlayer) {
-                geometries[newPlayer.id] = new THREE.PlaneGeometry( tailleCarre, tailleCarre, 1 );
-                material = new THREE.MeshBasicMaterial( {color: newPlayer.color, side: THREE.DoubleSide} );
+            // 2.1 - Get nouveau player
+            var playersOnline = [];
+            socket.on('nouveau_client', function(infos) {
 
-                planes[newPlayer.id] = new THREE.Mesh( geometries[newPlayer.id], material );
-                planes[newPlayer.id].position.set(newPlayer.positionX, newPlayer.positionY, 0);
-                scene.add( planes[newPlayer.id] );
+                //On redefinit les joueurs en ligne
+                playersOnline = infos.players;
+
+                //On rafraichit le panel
+                refreshPanel(playersOnline);
+
+                //On rafraichit threejs
+                geometries[infos.new.id] = new THREE.PlaneGeometry( tailleCarre, tailleCarre, 1 );
+                material = new THREE.MeshBasicMaterial( {color: infos.new.color, side: THREE.DoubleSide} );
+
+                planes[infos.new.id] = new THREE.Mesh( geometries[infos.new.id], material );
+                planes[infos.new.id].position.set(infos.new.positionX, infos.new.positionY, 0);
+                scene.add( planes[infos.new.id] );
             });
 
             // 2.2 - Players, me and init
             var me = {};
-            var playersOnline = [];
             socket.on('me', function(infos) {
-                me = infos.me;
-                playersOnline = infos.players;
+                me = infos.new;
 
                 // Lancer Threejs quand je connais les players
                 init();
@@ -171,6 +172,37 @@
             function render() {
                 TWEEN.update();
                 renderer.render( scene, camera );
+            }
+
+            // 9 - Deconnexion client
+            socket.on('deco_client', function(infos) {
+
+                //On redefinit les joueurs en ligne
+                playersOnline = infos.players;
+
+                //On rafraichit le panel
+                refreshPanel(playersOnline);
+
+                //On rafraichit threejs
+                scene.remove( planes[infos.deco.id] );
+            });
+
+            // Final - Functions
+            function refreshPanel(players){
+
+                // On vide le panel
+                $('#player-scores .center-cont').html('');
+
+                // Pour chaque joueur
+                players.forEach(function(element){
+
+                    var htmlCode = '<div class="name-score">';
+                    htmlCode += '<p>' + element.pseudo + '<span class="show-score">' + element.score + '</span></p>';
+                    htmlCode += '</div>';
+
+                    $('#player-scores .center-cont').append(htmlCode);
+                });
+
             }
 
         </script>

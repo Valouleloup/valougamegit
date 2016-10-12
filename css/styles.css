@@ -20,10 +20,16 @@ header{
     height:70px;
     background:#41AFD4;
     color:#fefefe;
+    padding:0 10px;
 }
 
 h1{
     line-height:70px;
+}
+
+h1 span{
+    font-size:10px;
+    font-weight:300;
 }
 
 #player-scores{
@@ -31,7 +37,7 @@ h1{
     height:42px;
     background:#333240;
     color: #71A4B6;
-    padding:10px 0;
+    padding:10px 10px;
 }
 
 #player-scores p{

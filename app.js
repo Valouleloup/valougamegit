@@ -35,19 +35,19 @@ io.sockets.on('connection', function (socket, pseudo) {
 
         currentId++;
 
-        // Ajout du player
+        // Ajout du player au tableau des joueurs
         players.push(socket.infos);
 
         //Infos a envoyer
         var serverInfos = {};
         serverInfos.players = players;
-        serverInfos.me = socket.infos;
+        serverInfos.new = socket.infos;
 
         // Check
         console.log('Nouveau user : ' + pseudoSecure + ' !');
         console.log(players);
 
-        io.emit('nouveau_client', socket.infos);
+        io.emit('nouveau_client', serverInfos);
         socket.emit('me', serverInfos);
     });
 
@@ -73,6 +73,20 @@ io.sockets.on('connection', function (socket, pseudo) {
         }
 
         io.emit('message', {infos: socket.infos, content: contentMessage});
+    });
+
+    /** Final - Deconnexion */
+    socket.on('disconnect', function() {
+        console.log('Player disconnect ! Id : ' + socket.infos.id);
+
+        var idToRemove = players.indexOf(socket.infos);
+        players.splice(idToRemove, 1);
+
+        var serverInfos = {};
+        serverInfos.players = players;
+        serverInfos.deco = socket.infos;
+
+        io.emit('deco_client', serverInfos);
     });
 
 });
