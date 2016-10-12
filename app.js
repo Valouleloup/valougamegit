@@ -47,7 +47,7 @@ io.sockets.on('connection', function (socket, pseudo) {
         console.log('Nouveau user : ' + pseudoSecure + ' !');
         console.log(players);
 
-        io.emit('nouveau_client', serverInfos);
+        socket.broadcast.emit('nouveau_client', serverInfos);
         socket.emit('me', serverInfos);
     });
 

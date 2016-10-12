@@ -17,7 +17,7 @@
 
         <header>
             <div class="center-cont">
-                <h1>Valou Game <span class="game-version">v0.3.1</span> </h1>
+                <h1>Valou Game <span class="game-version">v0.3.2</span> </h1>
             </div>
         </header>
 
@@ -66,19 +66,29 @@
                 //On rafraichit le panel
                 refreshPanel(playersOnline);
 
+                console.log(infos.new.id);
+                console.log(me.id);
                 //On rafraichit threejs
-                geometries[infos.new.id] = new THREE.PlaneGeometry( tailleCarre, tailleCarre, 1 );
-                material = new THREE.MeshBasicMaterial( {color: infos.new.color, side: THREE.DoubleSide} );
+                if(infos.new.id != me.id){
+                    geometries[infos.new.id] = new THREE.PlaneGeometry( tailleCarre, tailleCarre, 1 );
+                    material = new THREE.MeshBasicMaterial( {color: infos.new.color, side: THREE.DoubleSide} );
 
-                planes[infos.new.id] = new THREE.Mesh( geometries[infos.new.id], material );
-                planes[infos.new.id].position.set(infos.new.positionX, infos.new.positionY, 0);
-                scene.add( planes[infos.new.id] );
+                    planes[infos.new.id] = new THREE.Mesh( geometries[infos.new.id], material );
+                    planes[infos.new.id].position.set(infos.new.positionX, infos.new.positionY, 0);
+                    scene.add( planes[infos.new.id] );
+                }
             });
 
             // 2.2 - Players, me and init
             var me = {};
             socket.on('me', function(infos) {
                 me = infos.new;
+
+                //On redefinit les joueurs en ligne
+                playersOnline = infos.players;
+
+                //On rafraichit le panel
+                refreshPanel(playersOnline);
 
                 // Lancer Threejs quand je connais les players
                 init();
