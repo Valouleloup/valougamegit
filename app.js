@@ -5,13 +5,15 @@ var express = require('express'),
     ent = require('ent'),
     fs = require('fs');
 
+// Dossier root fichiers
 app.use(express.static(__dirname + '/'));
 
+// Init variables
 var players = [];
 var currentId = 0;
 var color = [0xF5C15F, 0x4CCE73, 0x87A9F2, 0xE66D5F];
 
-
+// Home page
 app.get('/', function (req, res) {
     res.sendfile(__dirname + '/index.html');
 });
