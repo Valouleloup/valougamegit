@@ -17,7 +17,7 @@
 
         <header>
             <div class="center-cont">
-                <h1>Valou Game <span class="game-version">v0.3.3</span></h1>
+                <h1>Valou Game <span class="game-version">v0.4.1</span></h1>
             </div>
         </header>
 
@@ -206,8 +206,10 @@
                 // Pour chaque joueur
                 players.forEach(function(element){
 
+                    var colorClass = 'color' + (element.id % 6);
+
                     var htmlCode = '<div class="name-score">';
-                    htmlCode += '<p>' + element.pseudo + '<span class="show-score">' + element.score + '</span></p>';
+                    htmlCode += '<p>' + element.pseudo + '<span class="show-score ' + colorClass + '">' + element.score + '</span></p>';
                     htmlCode += '</div>';
 
                     $('#player-scores .center-cont').append(htmlCode);

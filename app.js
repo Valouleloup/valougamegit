@@ -11,7 +11,7 @@ app.use(express.static(__dirname + '/'));
 // Init variables
 var players = [];
 var currentId = 0;
-var color = [0xF5C15F, 0x4CCE73, 0x87A9F2, 0xE66D5F];
+var color = [0xF5C15F, 0x4CCE73, 0x87A9F2, 0xE66D5F, 0xB089C2, 0x7EAA94];
 
 // Home page
 app.get('/', function (req, res) {
@@ -27,7 +27,7 @@ io.sockets.on('connection', function (socket, pseudo) {
 
         socket.infos = {};
         socket.infos.id = currentId;
-        socket.infos.color = color[currentId % 4];
+        socket.infos.color = color[currentId % 6];
         socket.infos.pseudo = pseudoSecure;
         socket.infos.positionX = 0;
         socket.infos.positionY = 0;
