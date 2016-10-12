@@ -53,52 +53,60 @@ io.sockets.on('connection', function (socket, pseudo) {
 
     /** 3 - Message */
     socket.on('message', function (message) {
-        typeMessage = message.type;
-        contentMessage = message.content;
+        if(socket.infos != undefined){
+            typeMessage = message.type;
+            contentMessage = message.content;
 
-        var gapMove = 2;
-        var minX = -12;
-        var maxX = 12;
-        var minY = -7;
-        var maxY = 7;
-        switch(message.content){
-            case 'Gauche':
-                if(socket.infos.positionX > minX){
-                    socket.infos.positionX -= gapMove;
-                }
-                break;
-            case 'Haut':
-                if(socket.infos.positionY < maxY){
-                    socket.infos.positionY += gapMove;
-                }
-                break;
-            case 'Droite':
-                if(socket.infos.positionX < maxX){
-                    socket.infos.positionX += gapMove;
-                }
-                break;
-            case 'Bas':
-                if(socket.infos.positionY > minY){
-                    socket.infos.positionY -= gapMove;
-                }
-                break;
+            var gapMove = 2;
+            var minX = -12;
+            var maxX = 12;
+            var minY = -7;
+            var maxY = 7;
+            switch(message.content){
+                case 'Gauche':
+                    if(socket.infos.positionX > minX){
+                        socket.infos.positionX -= gapMove;
+                    }
+                    break;
+                case 'Haut':
+                    if(socket.infos.positionY < maxY){
+                        socket.infos.positionY += gapMove;
+                    }
+                    break;
+                case 'Droite':
+                    if(socket.infos.positionX < maxX){
+                        socket.infos.positionX += gapMove;
+                    }
+                    break;
+                case 'Bas':
+                    if(socket.infos.positionY > minY){
+                        socket.infos.positionY -= gapMove;
+                    }
+                    break;
+            }
+
+            io.emit('message', {infos: socket.infos, content: contentMessage});
+        } else{
+            console.log('Socket undefined in message');
         }
-
-        io.emit('message', {infos: socket.infos, content: contentMessage});
     });
 
     /** Final - Deconnexion */
     socket.on('disconnect', function() {
-        console.log('Player disconnect ! Id : ' + socket.infos.id);
+        if(socket.infos != undefined){
+            console.log('Player disconnect ! Id : ' + socket.infos.id);
 
-        var idToRemove = players.indexOf(socket.infos);
-        players.splice(idToRemove, 1);
+            var idToRemove = players.indexOf(socket.infos);
+            players.splice(idToRemove, 1);
 
-        var serverInfos = {};
-        serverInfos.players = players;
-        serverInfos.deco = socket.infos;
+            var serverInfos = {};
+            serverInfos.players = players;
+            serverInfos.deco = socket.infos;
 
-        io.emit('deco_client', serverInfos);
+            io.emit('deco_client', serverInfos);
+        } else{
+            console.log('Socket undefined in disconnect');
+        }
     });
 
 });
