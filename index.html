@@ -3,6 +3,8 @@
     <head>
         <meta charset="utf-8" />
         <title>Valou Game</title>
+        <link rel="stylesheet" href="/css/styles.css">
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400" rel="stylesheet">
         <style>
             .container{
                 width:500px;
@@ -12,7 +14,23 @@
     </head>
  
     <body>
-        <h1>Valou Game !</h1>
+
+        <header>
+            <div class="center-cont">
+                <h1>Valou Game</h1>
+            </div>
+        </header>
+
+        <div id="player-scores">
+            <div class="center-cont">
+                <div class="name-score">
+                    <p>Player1 <span class="show-score">1654</span></p>
+                </div>
+                <div class="name-score">
+                    <p>Player2 <span class="show-score">682</span></p>
+                </div>
+            </div>
+        </div>
 
         <div class="players">
         </div>
@@ -22,6 +40,10 @@
 
         <div id="container">
         </div>
+
+        <footer>
+            <p>Powered by Valou</p>
+        </footer>
 
         <script src="/three.js"></script>
         <script src="/tween.min.js"></script>
@@ -57,8 +79,7 @@
                 me = infos.me;
                 playersOnline = infos.players;
 
-                console.log(playersOnline);
-
+                // Lancer Threejs quand je connais les players
                 init();
                 animate();
             });
@@ -84,8 +105,8 @@
             // 5 - Game
             var container;
             var camera, scene, renderer;
-            var width = 400; //window.innerWidth
-            var height = 300; //window.innerHeight
+            var width = 600; //window.innerWidth
+            var height = 400; //window.innerHeight
             var tailleCarre = 1;
             var geometries = [];
             var material;
@@ -97,32 +118,11 @@
                 // Move : Tween
                 var timeMove = 40;
                 var idPlayerMoving = message.infos.id;
-                switch(message.content){
-                    case 'Gauche':
-                        console.log('Gauche');
-                        new TWEEN.Tween( planes[idPlayerMoving].position ).to({
-                            x: message.infos.positionX
-                        }, timeMove).easing( TWEEN.Easing.Cubic.Out).start();
-                        break;
-                    case 'Haut':
-                        console.log('Haut');
-                        new TWEEN.Tween( planes[idPlayerMoving].position ).to({
-                            y: message.infos.positionY
-                        }, timeMove).easing( TWEEN.Easing.Cubic.Out).start();
-                        break;
-                    case 'Droite':
-                        console.log('Droite');
-                        new TWEEN.Tween( planes[idPlayerMoving].position ).to({
-                            x: message.infos.positionX
-                        }, timeMove).easing( TWEEN.Easing.Cubic.Out).start();
-                        break;
-                    case 'Bas':
-                        console.log('Bas');
-                        new TWEEN.Tween( planes[idPlayerMoving].position ).to({
-                            y: message.infos.positionY
-                        }, timeMove).easing( TWEEN.Easing.Cubic.Out).start();
-                        break;
-                }
+                // Refresh position
+                new TWEEN.Tween( planes[idPlayerMoving].position ).to({
+                    x: message.infos.positionX,
+                    y: message.infos.positionY
+                }, timeMove).easing( TWEEN.Easing.Cubic.Out).start();
             });
 
             // 5.2 - ThreeJs
@@ -148,7 +148,7 @@
 
                 renderer = new THREE.WebGLRenderer( { antialias: false } );
                 renderer.setPixelRatio( window.devicePixelRatio );
-                renderer.setClearColor( 0x4B4C4E );
+                renderer.setClearColor( 0x3f4651 );
                 renderer.setSize( width, height );
 
                 container.appendChild( renderer.domElement );
