@@ -111,6 +111,22 @@ io.sockets.on('connection', function (socket, pseudo) {
                     break;
             }
 
+            // Trouve la bubble associee
+            var bubAssociee = bubbles.filter(function(bub) {
+                return bub.id === socket.infos.id;
+            })[0];
+
+            // Si les positions sont égales, on augmente les points
+            if((bubAssociee != undefined) &&(socket.infos.positionX == bubAssociee.positionX && socket.infos.positionY == bubAssociee.positionY)){
+                socket.infos.score++;
+                console.log('Success, position equivalente');
+
+                var idBubToRemove = bubbles.indexOf(bubAssociee);
+                bubbles.splice(idBubToRemove, 1);
+
+                io.emit('success', players);
+            }
+
             io.emit('message', {infos: socket.infos, content: contentMessage});
         } else{
             console.log('Socket undefined in message');
