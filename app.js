@@ -14,6 +14,7 @@ var currentId = 0;
 var color = [0xF5C15F, 0x4CCE73, 0x87A9F2, 0xE66D5F, 0xB089C2, 0x7EAA94];
 var round = 1;
 var bubbles = [];
+var winners = [];
 
 // Home page
 app.get('/', function (req, res) {
@@ -22,6 +23,7 @@ app.get('/', function (req, res) {
 
 setInterval(function(){
     bubbles = [];
+    winners = [];
     console.log('Round ' + round + ' !');
 
     players.forEach(function(element){
@@ -116,15 +118,39 @@ io.sockets.on('connection', function (socket, pseudo) {
                 return bub.id === socket.infos.id;
             })[0];
 
-            // Si les positions sont égales, on augmente les points
+            // Si les positions sont égales, on augmente les points du joueur
             if((bubAssociee != undefined) &&(socket.infos.positionX == bubAssociee.positionX && socket.infos.positionY == bubAssociee.positionY)){
-                socket.infos.score++;
-                console.log('Success, position equivalente');
 
+                // Attribution des points
+                switch(winners.length){
+                    case 0:
+                        socket.infos.score += 3;
+                        winners.push(socket.infos.pseudo);
+                        console.log(socket.infos.pseudo + " : +3 !");
+                        break;
+                    case 1:
+                        socket.infos.score += 2;
+                        winners.push(socket.infos.pseudo);
+                        console.log(socket.infos.pseudo + " : +2 !");
+                        break;
+                    case 2:
+                        socket.infos.score += 1;
+                        winners.push(socket.infos.pseudo);
+                        console.log(socket.infos.pseudo + " : +1 !");
+                        break;
+                }
+
+                // On enleve la bulle du tablea des bulles
                 var idBubToRemove = bubbles.indexOf(bubAssociee);
                 bubbles.splice(idBubToRemove, 1);
 
-                io.emit('success', players);
+                // On renvoit les joueurs pour le panel et le joueur gagnant pour enlever l'affichage de sa bulle
+                var infosSuccess = {
+                    players: players,
+                    success: socket.infos
+                };
+
+                io.emit('success', infosSuccess);
             }
 
             io.emit('message', {infos: socket.infos, content: contentMessage});

@@ -17,7 +17,7 @@
 
         <header>
             <div class="center-cont">
-                <h1>Valou Game <span class="game-version">v0.6.1</span></h1>
+                <h1>Valou Game <span class="game-version">v1.0.1</span></h1>
             </div>
         </header>
 
@@ -147,12 +147,14 @@
             });
 
             // 5.2 - Success move
-            socket.on('success', function(players) {
+            socket.on('success', function(infosSuccess) {
 
-                playersOnline = players;
+                // On rafraichit les scores des joueurs
+                playersOnline = infosSuccess.players;
 
-                console.log(playersOnline);
-                console.log(players);
+                // On enleve la bulle du joueur ayant gagne
+                var playerSuccess = infosSuccess.success;
+                scene.remove(meshSpheres[playerSuccess.id]);
 
                 //On rafraichit le panel
                 refreshPanel(playersOnline);
@@ -274,7 +276,7 @@
              * @param color Couleur de la bulle
              * @param positionX
              * @param positionY
-             * @param index
+             * @param index Index de la bulle = index du joueur
              */
             function createNewBubble(index, positionX, positionY, color){
 
