@@ -11,7 +11,7 @@
 
         <header>
             <div class="center-cont">
-                <h1>Valou Game <span class="game-version">v1.0.4</span></h1>
+                <h1>Valou Game <span class="game-version">v1.2.1</span></h1>
             </div>
         </header>
 
@@ -91,15 +91,37 @@
             socket.on('me', function(infos) {
                 me = infos.new;
 
-                //On redefinit les joueurs en ligne
+                // On redefinit les joueurs en ligne
                 playersOnline = infos.players;
 
-                //On rafraichit le panel
+                // On rafraichit le panel
                 refreshPanel(playersOnline);
 
                 // Lancer Threejs quand je connais les players
                 init();
                 animate();
+            });
+
+            // 2.3 - Ready
+            socket.on('player_ready', function(players){
+
+                // On redefinit les joueurs en ligne
+                playersOnline = players;
+
+                // On rafraichit le panel
+                refreshPanel(playersOnline);
+
+            });
+
+            // 2.4 - New game
+            socket.on('new_game', function(players){
+
+                // On redefinit les joueurs en ligne
+                playersOnline = players;
+
+                // On rafraichit le panel
+                refreshPanel(playersOnline);
+
             });
 
             // 4 - Moves
@@ -116,6 +138,15 @@
                         break;
                     case 40:
                         socket.emit('message', {type: 'Move', content: 'Bas'});
+                        break;
+                    case 70:
+                        socket.emit('player_ready', {etat: 'force'});
+                        break;
+                    case 82:
+                        socket.emit('player_ready', {etat: 'pret'});
+                        break;
+                    default:
+                        console.log(event.keyCode);
                         break;
                 }
             });

@@ -30,6 +30,27 @@ app.get('/', function (req, res) {
 });
 
 setInterval(function(){
+
+    if(etatJeu == ATTENTE){
+
+        // Si les joueurs sont prets, on passe à l'etape ready
+        if(arePlayersReady()){
+            etatJeu = READY;
+            console.log("Etat partie : ready !");
+        }
+
+    }
+
+    if(etatJeu == READY){
+
+        resetPlayersScores();
+
+        io.emit('new_game', players);
+
+        etatJeu = PLAY;
+
+    }
+
     bubbles = [];
     winners = [];
     console.log('Round ' + round + ' !');
@@ -58,6 +79,41 @@ setInterval(function(){
     round++;
 }, 5*1000);
 
+// Les joueurs sont prets ?
+function arePlayersReady(){
+
+    var force = 0;
+    var go = 0;
+
+    if(players.length > 1){
+        go = 1;
+    }
+
+    players.forEach(function(element){
+        console.log('Joueur ' + element.pseudo + ' pret ? ' + element.score);
+        if(element.score != 'pret'){
+            go = 0;
+        }
+        if(element.score == 'force'){
+            force = 1;
+        }
+    });
+
+    return go || force;
+
+}
+
+// On retablit les scores
+function resetPlayersScores(){
+
+    players.forEach(function(element){
+       element.score = 0;
+    });
+
+    console.log('Scores reset !');
+
+}
+
 io.sockets.on('connection', function (socket, pseudo) {
 
     /** 2 - Nouveau client */
@@ -71,7 +127,7 @@ io.sockets.on('connection', function (socket, pseudo) {
         socket.infos.pseudo = pseudoSecure;
         socket.infos.positionX = 0;
         socket.infos.positionY = 0;
-        socket.infos.score = 0;
+        socket.infos.score = 'attente';
 
         currentId++;
 
@@ -89,6 +145,17 @@ io.sockets.on('connection', function (socket, pseudo) {
 
         socket.broadcast.emit('nouveau_client', serverInfos);
         socket.emit('me', serverInfos);
+    });
+
+    /** 2.1 - Ready */
+    socket.on('player_ready', function(ready){
+
+        // Le joueur est pret
+        socket.infos.score = ready.etat;
+
+        // On transmet aux autres joueurs
+        io.emit('player_ready', players);
+
     });
 
     /** 3 - Message */
