@@ -57,6 +57,13 @@ h1 span{
     margin-left:5px;
 }
 
+.tip{
+    padding-top:4px;
+    text-align:center;
+    color:#8f9aa1;
+    font-size:11px;
+}
+
 #container{
     position:relative;
     width:600px;
