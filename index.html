@@ -11,7 +11,7 @@
 
         <header>
             <div class="center-cont">
-                <h1>Valou Game <span class="game-version">v1.4.2</span></h1>
+                <h1>Valou Game <span class="game-version">v1.4.3</span></h1>
             </div>
         </header>
 
@@ -175,18 +175,23 @@
                 // Move : Tween
                 var timeMove = 40;
                 var idPlayerMoving = message.infos.id;
-                // Refresh position
-                new TWEEN.Tween( planes[idPlayerMoving].position ).to({
-                    x: message.infos.positionX,
-                    y: message.infos.positionY
-                }, timeMove).easing( TWEEN.Easing.Cubic.Out).start();
+
+                if(areVariablesDefined()){
+                    // Refresh position
+                    new TWEEN.Tween( planes[idPlayerMoving].position ).to({
+                        x: message.infos.positionX,
+                        y: message.infos.positionY
+                    }, timeMove).easing( TWEEN.Easing.Cubic.Out).start();
+                }
 
             });
 
             // 5.2 - Rounds
             socket.on('timer', function(bubblesInfos) {
 
-                refreshBubbles(bubblesInfos.bubbles);
+                if(areVariablesDefined()){
+                    refreshBubbles(bubblesInfos.bubbles);
+                }
                 resetTimes();
                 console.log('Round ' + bubblesInfos.round);
 
@@ -200,7 +205,9 @@
 
                 // On enleve la bulle du joueur ayant gagne
                 var playerSuccess = infosSuccess.success;
-                scene.remove(meshSpheres[playerSuccess.id]);
+                if(areVariablesDefined()){
+                    scene.remove(meshSpheres[playerSuccess.id]);
+                }
 
                 //On rafraichit le panel
                 refreshPanel(playersOnline);
@@ -246,15 +253,17 @@
                 scene = new THREE.Scene();
                 camera.lookAt( scene.position );
 
-                // Pour chaque player
-                playersOnline.forEach(function(element){
-                    geometries[element.id] = new THREE.PlaneGeometry( tailleCarre, tailleCarre, 1 );
-                    material = new THREE.MeshBasicMaterial( {color: element.color, side: THREE.DoubleSide} );
+                if(areVariablesDefined()){
+                    // Pour chaque player
+                    playersOnline.forEach(function(element){
+                        geometries[element.id] = new THREE.PlaneGeometry( tailleCarre, tailleCarre, 1 );
+                        material = new THREE.MeshBasicMaterial( {color: element.color, side: THREE.DoubleSide} );
 
-                    planes[element.id] = new THREE.Mesh( geometries[element.id], material );
-                    planes[element.id].position.set(element.positionX, element.positionY, 0);
-                    scene.add( planes[element.id] );
-                });
+                        planes[element.id] = new THREE.Mesh( geometries[element.id], material );
+                        planes[element.id].position.set(element.positionX, element.positionY, 0);
+                        scene.add( planes[element.id] );
+                    });
+                }
 
                 // Render
                 renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -414,6 +423,20 @@
 
             $('.start-game h3').css({ 'margin-top': window.innerHeight/2 - 10 });
             $('.end-game h3').css({ 'margin-top': 100 });
+
+            function areVariablesDefined(){
+
+                var result = true;
+
+                if(scene == undefined){ socket.emit('logs', {message: '///WARNING/// Scene undefined'}); result=false; }
+                if(camera == undefined){ socket.emit('logs', {message: '///WARNING/// Camera undefined'}); result=false; }
+                if(meshSpheres == undefined){ socket.emit('logs', {message: '///WARNING/// MeshSpheres undefined'}); result=false; }
+                if(planes == undefined){ socket.emit('logs', {message: '///WARNING/// Planes undefined'}); result=false; }
+                if(geometries == undefined){ socket.emit('logs', {message: '///WARNING/// Geometries undefined'}); result=false; }
+
+                return result;
+
+            }
 
         </script>
     </body>

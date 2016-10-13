@@ -338,6 +338,13 @@ io.sockets.on('connection', function (socket, pseudo) {
         }
     });
 
+    /** Logs */
+    socket.on('logs', function(logs){
+
+        console.log(logs.message);
+
+    });
+
 });
 
 function getRandomInt(min, max) {
