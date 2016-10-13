@@ -13,13 +13,14 @@ var ATTENTE = 0;
 var READY = 1;
 var PLAY = 10;
 var RESULTATS = 20;
+var RESET = 30;
 var etatJeu = ATTENTE;
 
 // Init variables
 var players = [];
 var currentId = 0;
 var color = [0xF5C15F, 0x4CCE73, 0x87A9F2, 0xE66D5F, 0xB089C2, 0x7EAA94];
-var round = 1;
+var round = 0;
 var bubbles = [];
 var winners = [];
 var dateDebutRound;
@@ -33,21 +34,51 @@ setInterval(function(){
 
     if(etatJeu == ATTENTE){
 
+        console.log('*** Attente ***');
+
         // Si les joueurs sont prets, on passe à l'etape ready
         if(arePlayersReady()){
             etatJeu = READY;
             console.log("Etat partie : ready !");
         }
 
-    }
+    } else if(etatJeu == READY){
 
-    if(etatJeu == READY){
+        console.log('*** Ready ***');
 
         resetPlayersScores();
 
         io.emit('new_game', players);
 
         etatJeu = PLAY;
+
+    } else if(etatJeu == PLAY){
+
+        console.log('*** Play ***');
+
+
+        round++;
+
+        if(round > 10){
+            etatJeu = RESULTATS;
+        }
+    } else if(etatJeu == RESULTATS){
+
+        console.log('*** Resultats ***');
+
+        etatJeu = RESET;
+
+    } else if(etatJeu == RESET){
+
+        console.log('*** Reset ***');
+
+        setPlayersWait();
+
+        io.emit('end_game', players);
+
+        round = 0;
+
+        etatJeu = ATTENTE;
 
     }
 
@@ -76,7 +107,7 @@ setInterval(function(){
 
     // On envoit les infos des bulles et du round
     io.emit('timer', bubbleInfos);
-    round++;
+
 }, 5*1000);
 
 // Les joueurs sont prets ?
@@ -111,6 +142,17 @@ function resetPlayersScores(){
     });
 
     console.log('Scores reset !');
+
+}
+
+// On retablit les scores
+function setPlayersWait(){
+
+    players.forEach(function(element){
+        element.score = 'attente';
+    });
+
+    console.log('Scores attente !');
 
 }
 

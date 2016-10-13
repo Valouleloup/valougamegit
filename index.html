@@ -11,7 +11,7 @@
 
         <header>
             <div class="center-cont">
-                <h1>Valou Game <span class="game-version">v1.2.1</span></h1>
+                <h1>Valou Game <span class="game-version">v1.3.1</span></h1>
             </div>
         </header>
 
@@ -189,6 +189,17 @@
 
                 // On refraichit les temps
                 addTime(playerSuccess, infosSuccess.temps);
+
+            });
+
+            // 9 - End game
+            socket.on('end_game', function(players){
+
+                // On redefinit les joueurs en ligne
+                playersOnline = players;
+
+                // On rafraichit le panel
+                refreshPanel(playersOnline);
 
             });
 
