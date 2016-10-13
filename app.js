@@ -15,6 +15,7 @@ var color = [0xF5C15F, 0x4CCE73, 0x87A9F2, 0xE66D5F, 0xB089C2, 0x7EAA94];
 var round = 1;
 var bubbles = [];
 var winners = [];
+var dateDebutRound;
 
 // Home page
 app.get('/', function (req, res) {
@@ -26,6 +27,7 @@ setInterval(function(){
     winners = [];
     console.log('Round ' + round + ' !');
 
+    // On ajoute une bulle par joueur
     players.forEach(function(element){
         var newBubble = {
             id: element.id,
@@ -35,13 +37,16 @@ setInterval(function(){
         };
         bubbles.push(newBubble);
     });
-    console.log(bubbles);
 
     var bubbleInfos = {
         round: round,
         bubbles: bubbles
     };
 
+    // On definit la date de debut du round
+    dateDebutRound = new Date();
+
+    // On envoit les infos des bulles et du round
     io.emit('timer', bubbleInfos);
     round++;
 }, 5*1000);
@@ -121,22 +126,27 @@ io.sockets.on('connection', function (socket, pseudo) {
             // Si les positions sont égales, on augmente les points du joueur
             if((bubAssociee != undefined) &&(socket.infos.positionX == bubAssociee.positionX && socket.infos.positionY == bubAssociee.positionY)){
 
+                // On recupere le temps mit par le joueur
+                var dateSuccess = new Date();
+                var tempsSuccess = Math.abs(dateSuccess - dateDebutRound)/1000;
+                console.log(tempsSuccess);
+
                 // Attribution des points
                 switch(winners.length){
                     case 0:
                         socket.infos.score += 3;
                         winners.push(socket.infos.pseudo);
-                        console.log(socket.infos.pseudo + " : +3 !");
+                        console.log(socket.infos.pseudo + " : +3 points !");
                         break;
                     case 1:
                         socket.infos.score += 2;
                         winners.push(socket.infos.pseudo);
-                        console.log(socket.infos.pseudo + " : +2 !");
+                        console.log(socket.infos.pseudo + " : +2 points !");
                         break;
                     case 2:
                         socket.infos.score += 1;
                         winners.push(socket.infos.pseudo);
-                        console.log(socket.infos.pseudo + " : +1 !");
+                        console.log(socket.infos.pseudo + " : +1 points !");
                         break;
                 }
 
@@ -147,7 +157,8 @@ io.sockets.on('connection', function (socket, pseudo) {
                 // On renvoit les joueurs pour le panel et le joueur gagnant pour enlever l'affichage de sa bulle
                 var infosSuccess = {
                     players: players,
-                    success: socket.infos
+                    success: socket.infos,
+                    temps: tempsSuccess
                 };
 
                 io.emit('success', infosSuccess);

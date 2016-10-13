@@ -58,18 +58,42 @@ h1 span{
 }
 
 #container{
+    position:relative;
     width:600px;
     height:400px;
     margin: 10px auto;
     box-shadow:0 0 0 3px #333240;
 }
 
-#player-scores p span.color0{background:#F5C15F;}
-#player-scores p span.color1{background:#4CCE73;}
-#player-scores p span.color2{background:#87A9F2;}
-#player-scores p span.color3{background:#E66D5F;}
-#player-scores p span.color4{background:#B089C2;}
-#player-scores p span.color5{background:#7EAA94;}
+.times{
+    position:absolute;
+    right:-150px;
+    width:150px;
+    height:400px;
+    padding:10px;
+    color:#d5d5d5;
+    font-size:11px;
+}
+
+.times p span{
+    padding:3px 6px;
+    margin-left:6px;
+    font-size:14px;
+}
+
+p span.color0{background:#F5C15F !important;}
+p span.color1{background:#4CCE73 !important;}
+p span.color2{background:#87A9F2 !important;}
+p span.color3{background:#E66D5F !important;}
+p span.color4{background:#B089C2 !important;}
+p span.color5{background:#7EAA94 !important;}
+
+p span.fcolor0{color:#F5C15F !important;}
+p span.fcolor1{color:#4CCE73 !important;}
+p span.fcolor2{color:#87A9F2 !important;}
+p span.fcolor3{color:#E66D5F !important;}
+p span.fcolor4{color:#B089C2 !important;}
+p span.fcolor5{color:#7EAA94 !important;}
 
 footer{
     width:100%;

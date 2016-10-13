@@ -33,6 +33,8 @@
         </div>
 
         <div id="container">
+            <div class="times">
+            </div>
         </div>
 
         <footer>
@@ -142,6 +144,7 @@
             socket.on('timer', function(bubblesInfos) {
 
                 refreshBubbles(bubblesInfos.bubbles);
+                resetTimes();
                 console.log('Round ' + bubblesInfos.round);
 
             });
@@ -158,6 +161,9 @@
 
                 //On rafraichit le panel
                 refreshPanel(playersOnline);
+
+                // On refraichit les temps
+                addTime(playerSuccess, infosSuccess.temps);
 
             });
 
@@ -251,6 +257,30 @@
 
                     $('#player-scores .center-cont').append(htmlCode);
                 });
+
+            }
+
+            /**
+             * Ajout des nouveaux temps
+             */
+            function addTime(playerSuccess, temps){
+
+                var colorClass = 'fcolor' + (playerSuccess.id % 6);
+
+                var htmlCode = '<div class="time">';
+                htmlCode += '<p>' + playerSuccess.pseudo + '<span class="show-score ' + colorClass + '">' + temps + '</span></p>';
+                htmlCode += '</div>';
+
+                $('#container .times').append(htmlCode);
+
+            }
+
+            /**
+             * Reset des temps au debut de chaque round
+             */
+            function resetTimes(){
+
+                $('#container .times').html('');
 
             }
 
