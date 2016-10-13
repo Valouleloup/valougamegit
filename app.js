@@ -15,6 +15,7 @@ var PLAY = 10;
 var RESULTATS = 20;
 var RESET = 30;
 var etatJeu = ATTENTE;
+var pointsActive = false;
 
 // Init variables
 var players = [];
@@ -36,6 +37,9 @@ setInterval(function(){
 
         console.log('*** Attente ***');
 
+        resetTabs();
+        createBubbles();
+
         // Si les joueurs sont prets, on passe à l'etape ready
         if(arePlayersReady()){
             etatJeu = READY;
@@ -45,6 +49,8 @@ setInterval(function(){
     } else if(etatJeu == READY){
 
         console.log('*** Ready ***');
+
+        resetTabs();
 
         resetPlayersScores();
 
@@ -56,6 +62,10 @@ setInterval(function(){
 
         console.log('*** Play ***');
 
+        resetTabs();
+        createBubbles();
+
+        pointsActive = true;
 
         round++;
 
@@ -66,36 +76,33 @@ setInterval(function(){
 
         console.log('*** Resultats ***');
 
+        resetTabs();
+
+        pointsActive = false;
+
+        io.emit('end_game', players);
+
         etatJeu = RESET;
 
     } else if(etatJeu == RESET){
 
         console.log('*** Reset ***');
 
+        resetTabs();
+
         setPlayersWait();
 
-        io.emit('end_game', players);
-
         round = 0;
+
+        io.emit('reset_game', players);
 
         etatJeu = ATTENTE;
 
     }
 
-    bubbles = [];
-    winners = [];
     console.log('Round ' + round + ' !');
 
     // On ajoute une bulle par joueur
-    players.forEach(function(element){
-        var newBubble = {
-            id: element.id,
-            positionX: getRandomInt(-10,10),
-            positionY: getRandomInt(-5,5),
-            color: element.color
-        };
-        bubbles.push(newBubble);
-    });
 
     var bubbleInfos = {
         round: round,
@@ -134,6 +141,27 @@ function arePlayersReady(){
 
 }
 
+// On retablit les variables pour chaque round
+function resetTabs(){
+    bubbles = [];
+    winners = [];
+}
+
+// On cree les bulles pour chaque round
+function createBubbles(){
+
+    players.forEach(function(element){
+        var newBubble = {
+            id: element.id,
+            positionX: getRandomInt(-10,10),
+            positionY: getRandomInt(-5,5),
+            color: element.color
+        };
+        bubbles.push(newBubble);
+    });
+
+}
+
 // On retablit les scores
 function resetPlayersScores(){
 
@@ -169,7 +197,11 @@ io.sockets.on('connection', function (socket, pseudo) {
         socket.infos.pseudo = pseudoSecure;
         socket.infos.positionX = 0;
         socket.infos.positionY = 0;
-        socket.infos.score = 'attente';
+        if(pointsActive == true){
+            socket.infos.score = 0;
+        } else{
+            socket.infos.score = 'attente';
+        }
 
         currentId++;
 
@@ -248,7 +280,7 @@ io.sockets.on('connection', function (socket, pseudo) {
                 console.log(tempsSuccess);
 
                 // Attribution des points
-                if(etatJeu == PLAY){
+                if(pointsActive == true){
                     switch(winners.length){
                         case 0:
                             socket.infos.score += 3;

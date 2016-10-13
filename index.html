@@ -11,7 +11,7 @@
 
         <header>
             <div class="center-cont">
-                <h1>Valou Game <span class="game-version">v1.3.2</span></h1>
+                <h1>Valou Game <span class="game-version">v1.4.2</span></h1>
             </div>
         </header>
 
@@ -32,6 +32,17 @@
 
         <div id="container">
             <div class="times">
+            </div>
+        </div>
+
+        <div class="game-state start-game hide">
+            <h3>Debut de la partie</h3>
+        </div>
+
+        <div class="game-state end-game hide">
+            <h3>Fin de la partie</h3>
+            <div class="end-game-stats">
+
             </div>
         </div>
 
@@ -126,6 +137,9 @@
                 // On rafraichit le panel
                 refreshPanel(playersOnline);
 
+                // Show message new game
+                showMessageNewGame();
+
             });
 
             // 4 - Moves
@@ -198,6 +212,20 @@
 
             // 9 - End game
             socket.on('end_game', function(players){
+
+                // On redefinit les joueurs en ligne
+                playersOnline = players;
+
+                // On rafraichit le panel
+                refreshPanel(playersOnline);
+
+                // Show message new game
+                showMessageEndGame(players);
+
+            });
+
+            // 9.1 - Reset game
+            socket.on('reset_game', function(players){
 
                 // On redefinit les joueurs en ligne
                 playersOnline = players;
@@ -358,6 +386,34 @@
                 scene.add(meshSpheres[index]);
 
             }
+
+            function showMessageNewGame(){
+
+                $('.start-game').removeClass('hide').addClass('show');
+                setTimeout(function(){
+                    $('.start-game').removeClass('show').addClass('hide');
+                }, 4500);
+            }
+
+            function showMessageEndGame(players){
+
+                var htmlCode = '';
+
+                players.forEach(function(element){
+                    htmlCode += '<p>' + element.pseudo + ' <span class="show-score score0"> ' + element.score + '</span></p>';
+                });
+
+                $(".end-game-stats").html(htmlCode);
+
+                $('.end-game').removeClass('hide').addClass('show');
+                setTimeout(function(){
+                    $('.end-game').removeClass('show').addClass('hide');
+                }, 4500);
+            }
+
+
+            $('.start-game h3').css({ 'margin-top': window.innerHeight/2 - 10 });
+            $('.end-game h3').css({ 'margin-top': 100 });
 
         </script>
     </body>

@@ -102,6 +102,26 @@ p span.fcolor3{color:#E66D5F !important;}
 p span.fcolor4{color:#B089C2 !important;}
 p span.fcolor5{color:#7EAA94 !important;}
 
+.game-state{
+    position:fixed;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    z-index:10;
+    background:rgba(0,0,0,0.6);
+    color:#dedede;
+    text-align:center;
+}
+
+.show{
+    display:block;
+}
+
+.hide{
+    display:none;
+}
+
 footer{
     width:100%;
     height:25px;
