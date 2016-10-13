@@ -224,8 +224,10 @@ io.sockets.on('connection', function (socket, pseudo) {
     /** 2.1 - Ready */
     socket.on('player_ready', function(ready){
 
-        // Le joueur est pret
-        socket.infos.score = ready.etat;
+        // Le joueur est pret (si la partie n'est pas lancee)
+        if(pointsActive == false){
+            socket.infos.score = ready.etat;
+        }
 
         // On transmet aux autres joueurs
         io.emit('player_ready', players);
