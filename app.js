@@ -12,11 +12,37 @@ app.use(express.static(__dirname + '/'));
 var players = [];
 var currentId = 0;
 var color = [0xF5C15F, 0x4CCE73, 0x87A9F2, 0xE66D5F, 0xB089C2, 0x7EAA94];
+var round = 1;
+var bubbles = [];
 
 // Home page
 app.get('/', function (req, res) {
     res.sendfile(__dirname + '/index.html');
 });
+
+setInterval(function(){
+    bubbles = [];
+    console.log('Round ' + round + ' !');
+
+    players.forEach(function(element){
+        var newBubble = {
+            id: element.id,
+            positionX: getRandomInt(-10,10),
+            positionY: getRandomInt(-5,5),
+            color: element.color
+        };
+        bubbles.push(newBubble);
+    });
+    console.log(bubbles);
+
+    var bubbleInfos = {
+        round: round,
+        bubbles: bubbles
+    };
+
+    io.emit('timer', bubbleInfos);
+    round++;
+}, 5*1000);
 
 io.sockets.on('connection', function (socket, pseudo) {
 
@@ -110,5 +136,12 @@ io.sockets.on('connection', function (socket, pseudo) {
     });
 
 });
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min / 2);
+    max = Math.floor(max / 2);
+    result = (Math.floor(Math.random() * (max - min)) + min) * 2;
+    return result;
+}
 
 server.listen(process.env.PORT || 8080);

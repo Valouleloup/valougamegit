@@ -122,6 +122,7 @@
             var geometries = [];
             var material;
             var planes = [];
+            var meshSpheres = [];
 
             // 5.1 - Events from players
             socket.on('message', function(message) {
@@ -134,6 +135,15 @@
                     x: message.infos.positionX,
                     y: message.infos.positionY
                 }, timeMove).easing( TWEEN.Easing.Cubic.Out).start();
+
+            });
+
+            // 5.2 - Rounds
+            socket.on('timer', function(bubblesInfos) {
+
+                refreshBubbles(bubblesInfos.bubbles);
+                console.log('Round ' + bubblesInfos.round);
+
             });
 
             // 5.2 - ThreeJs
@@ -157,7 +167,8 @@
                     scene.add( planes[element.id] );
                 });
 
-                renderer = new THREE.WebGLRenderer( { antialias: false } );
+                // Render
+                renderer = new THREE.WebGLRenderer( { antialias: true } );
                 renderer.setPixelRatio( window.devicePixelRatio );
                 renderer.setClearColor( 0x3f4651 );
                 renderer.setSize( width, height );
@@ -179,7 +190,13 @@
                 render();
             }
 
+            /** RENDER **/
             function render() {
+
+                meshSpheres.forEach(function(element){
+                    element.rotation.z += 0.1;
+                });
+
                 TWEEN.update();
                 renderer.render( scene, camera );
             }
@@ -198,6 +215,11 @@
             });
 
             // Final - Functions
+
+            /**
+             * Rafraichit le panel affichant les joueurs et leurs points
+             * @param players
+             */
             function refreshPanel(players){
 
                 // On vide le panel
@@ -214,6 +236,41 @@
 
                     $('#player-scores .center-cont').append(htmlCode);
                 });
+
+            }
+
+            /**
+             * Rafraichit toutes les bulles
+             */
+            function refreshBubbles(listBubbles){
+
+                // On supprime les anciennes bulles de threejs
+                meshSpheres.forEach(function(element){
+                    scene.remove(element);
+                });
+
+                // On ajoute les nouvelles bulles threejs
+                listBubbles.forEach(function(element){
+                    createNewBubble(element.id, element.positionX, element.positionY, element.color);
+                });
+
+            }
+
+            /**
+             * Cree une nouvelle bulle que les joueurs doivent attraper
+             * @param color Couleur de la bulle
+             * @param positionX
+             * @param positionY
+             * @param index
+             */
+            function createNewBubble(index, positionX, positionY, color){
+
+                var geoSphere = new THREE.RingGeometry(0.2, 0.4, 0, 3);
+                var matSphere = new THREE.MeshBasicMaterial( {color:color, side: THREE.DoubleSide} );
+                var newSphere = new THREE.Mesh(geoSphere,matSphere);
+                newSphere.position.set(positionX,positionY,0);
+                meshSpheres[index] = newSphere;
+                scene.add(meshSpheres[index]);
 
             }
 
