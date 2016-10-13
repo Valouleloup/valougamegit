@@ -8,6 +8,13 @@ var express = require('express'),
 // Dossier root fichiers
 app.use(express.static(__dirname + '/'));
 
+// Variable d'etat du jeu
+var ATTENTE = 0;
+var READY = 1;
+var PLAY = 10;
+var RESULTATS = 20;
+var etatJeu = ATTENTE;
+
 // Init variables
 var players = [];
 var currentId = 0;
@@ -132,22 +139,24 @@ io.sockets.on('connection', function (socket, pseudo) {
                 console.log(tempsSuccess);
 
                 // Attribution des points
-                switch(winners.length){
-                    case 0:
-                        socket.infos.score += 3;
-                        winners.push(socket.infos.pseudo);
-                        console.log(socket.infos.pseudo + " : +3 points !");
-                        break;
-                    case 1:
-                        socket.infos.score += 2;
-                        winners.push(socket.infos.pseudo);
-                        console.log(socket.infos.pseudo + " : +2 points !");
-                        break;
-                    case 2:
-                        socket.infos.score += 1;
-                        winners.push(socket.infos.pseudo);
-                        console.log(socket.infos.pseudo + " : +1 points !");
-                        break;
+                if(etatJeu == PLAY){
+                    switch(winners.length){
+                        case 0:
+                            socket.infos.score += 3;
+                            winners.push(socket.infos.pseudo);
+                            console.log(socket.infos.pseudo + " : +3 points !");
+                            break;
+                        case 1:
+                            socket.infos.score += 2;
+                            winners.push(socket.infos.pseudo);
+                            console.log(socket.infos.pseudo + " : +2 points !");
+                            break;
+                        case 2:
+                            socket.infos.score += 1;
+                            winners.push(socket.infos.pseudo);
+                            console.log(socket.infos.pseudo + " : +1 points !");
+                            break;
+                    }
                 }
 
                 // On enleve la bulle du tablea des bulles

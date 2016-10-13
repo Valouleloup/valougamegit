@@ -5,19 +5,13 @@
         <title>Valou Game</title>
         <link rel="stylesheet" href="/css/styles.css">
         <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400" rel="stylesheet">
-        <style>
-            .container{
-                width:500px;
-                height:500px;
-            }
-        </style>
     </head>
  
     <body>
 
         <header>
             <div class="center-cont">
-                <h1>Valou Game <span class="game-version">v1.0.3</span></h1>
+                <h1>Valou Game <span class="game-version">v1.0.4</span></h1>
             </div>
         </header>
 
@@ -46,6 +40,17 @@
         <script src="/jquery-1.12.3.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script>
+
+            // 5 - Game
+            var container;
+            var camera, scene, renderer;
+            var width = 600; //window.innerWidth
+            var height = 400; //window.innerHeight
+            var tailleCarre = 1;
+            var geometries = [];
+            var material;
+            var planes = [];
+            var meshSpheres = [];
 
             // Init url
             var url = window.location.href;
@@ -114,17 +119,6 @@
                         break;
                 }
             });
-
-            // 5 - Game
-            var container;
-            var camera, scene, renderer;
-            var width = 600; //window.innerWidth
-            var height = 400; //window.innerHeight
-            var tailleCarre = 1;
-            var geometries = [];
-            var material;
-            var planes = [];
-            var meshSpheres = [];
 
             // 5.1 - Events from players
             socket.on('message', function(message) {
