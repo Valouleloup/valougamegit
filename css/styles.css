@@ -82,6 +82,21 @@ h1 span{
     font-size:11px;
 }
 
+.historique{
+    position:absolute;
+    left:-150px;
+    width:150px;
+    height:400px;
+    padding:10px;
+    color:#d5d5d5;
+    font-size:11px;
+    overflow:hidden;
+}
+
+.historique h4{
+    margin-top:6px;
+}
+
 .times p span{
     padding:3px 6px;
     margin-left:6px;
@@ -109,9 +124,17 @@ p span.fcolor5{color:#7EAA94 !important;}
     bottom:0;
     left:0;
     z-index:10;
-    background:rgba(0,0,0,0.6);
+    background:rgba(0,0,0,0.8);
     color:#dedede;
     text-align:center;
+}
+
+.end-game-stats{
+    margin-top:20px;
+}
+
+.end-game-stats p{
+    font-size:35px;
 }
 
 .show{

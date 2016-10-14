@@ -92,6 +92,7 @@ setInterval(function(){
 
         players.forEach(function(element){
             var singleScore = {
+                id: element.id,
                 pseudo: element.pseudo,
                 score: element.score
             };
