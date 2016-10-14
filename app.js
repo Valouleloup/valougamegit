@@ -20,7 +20,7 @@ var pointsActive = false;
 // Init variables
 var players = [];
 var currentId = 0;
-var color = [0xF5C15F, 0x82B364, 0x87A9F2, 0xE66D5F, 0xB089C2, 0x7EAA94];
+var color = [0xF5C15F, 0x75b352, 0x87A9F2, 0xE66D5F, 0xB089C2, 0x7EAA94];
 var round = 0;
 var bubbles = [];
 var winners = [];
