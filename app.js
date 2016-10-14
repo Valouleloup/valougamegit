@@ -22,9 +22,12 @@ var players = [];
 var currentId = 0;
 var color = [0xF5C15F, 0x75b352, 0x87A9F2, 0xE66D5F, 0xB089C2, 0x7EAA94];
 var round = 0;
+var nbPartie = 1;
 var bubbles = [];
 var winners = [];
 var dateDebutRound;
+var historique = [];
+var partie = {};
 
 // Home page
 app.get('/', function (req, res) {
@@ -69,7 +72,7 @@ setInterval(function(){
 
         round++;
 
-        if(round > 10){
+        if(round > 2){
             etatJeu = RESULTATS;
         }
     } else if(etatJeu == RESULTATS){
@@ -80,7 +83,28 @@ setInterval(function(){
 
         pointsActive = false;
 
+        partie = {};
+
+        partie = {
+            id: nbPartie,
+            scores: []
+        };
+
+        players.forEach(function(element){
+            var singleScore = {
+                pseudo: element.pseudo,
+                score: element.score
+            };
+
+            partie.scores.push(singleScore);
+        });
+
+        historique.push(partie);
+
+        nbPartie++;
+
         io.emit('end_game', players);
+        io.emit('historique', historique);
 
         etatJeu = RESET;
 

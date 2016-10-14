@@ -11,7 +11,7 @@
 
         <header>
             <div class="center-cont">
-                <h1>ValougameJS <span class="game-version">v1.4.7</span></h1>
+                <h1>ValougameJS <span class="game-version">v1.4.8 AntiCrash v4.0</span></h1>
             </div>
         </header>
 
@@ -33,6 +33,10 @@
         <div id="container">
             <div class="times">
             </div>
+        </div>
+
+        <div class="historique">
+
         </div>
 
         <div class="game-state start-game hide">
@@ -73,11 +77,11 @@
             // Init url
             var url = window.location.href;
 
-            // 0 - Socket
-            var socket = io.connect(url);
-
-            // 1 - Pseudo
+            // 0 - Pseudo
             var pseudo = prompt('Quel est votre pseudo ?');
+
+            // 1 - Socket
+            var socket = io.connect(url);
             socket.emit('nouveau_client', pseudo);
             document.title = document.title + ' - ' + pseudo;
 
@@ -231,6 +235,15 @@
 
                 // Show message new game
                 showMessageEndGame(players);
+
+            });
+
+            // 9.0 - Historique
+            socket.on('historique', function(historique){
+
+                console.log('Socket historique recu');
+
+                refreshHistorique(historique);
 
             });
 
@@ -421,6 +434,22 @@
                 setTimeout(function(){
                     $('.end-game').removeClass('show').addClass('hide');
                 }, 4500);
+            }
+
+            function refreshHistorique(historique){
+
+                $('.historique').html('');
+
+                historique.forEach(function(partie){
+
+                    $('.historique').append('<p> Partie ' + partie.id + "</p>");
+
+                    partie.scores.forEach(function(score){
+                        $('.historique').append('<p>' + score.pseudo + ' ' + score.score + ' pts</p>');
+                    });
+
+                });
+
             }
 
 
