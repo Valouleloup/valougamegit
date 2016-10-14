@@ -244,6 +244,7 @@ io.sockets.on('connection', function (socket, pseudo) {
 
         socket.broadcast.emit('nouveau_client', serverInfos);
         socket.emit('me', serverInfos);
+        socket.emit('historique', historique);
     });
 
     /** 2.1 - Ready */
