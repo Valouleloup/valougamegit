@@ -11,7 +11,7 @@
 
         <header>
             <div class="center-cont">
-                <h1>ValougameJS <span class="game-version">v1.4.5</span></h1>
+                <h1>ValougameJS <span class="game-version">v1.4.6</span></h1>
             </div>
         </header>
 
@@ -56,9 +56,6 @@
         <script src="/socket.io/socket.io.js"></script>
         <script>
 
-            // 5 - Game
-            var container;
-            var camera, scene, renderer;
             var width = 600; //window.innerWidth
             var height = 400; //window.innerHeight
             var tailleCarre = 1;
@@ -66,6 +63,12 @@
             var material;
             var planes = [];
             var meshSpheres = [];
+
+            while (areVariablesDefined()){
+                // 5 - Game
+                var container;
+                var camera, scene, renderer;
+            }
 
             // Init url
             var url = window.location.href;
@@ -428,11 +431,11 @@
 
                 var result = true;
 
-                if(scene == undefined){ socket.emit('logs', {message: '///WARNING/// Scene undefined'}); result=false; }
-                if(camera == undefined){ socket.emit('logs', {message: '///WARNING/// Camera undefined'}); result=false; }
-                if(meshSpheres == undefined){ socket.emit('logs', {message: '///WARNING/// MeshSpheres undefined'}); result=false; }
-                if(planes == undefined){ socket.emit('logs', {message: '///WARNING/// Planes undefined'}); result=false; }
-                if(geometries == undefined){ socket.emit('logs', {message: '///WARNING/// Geometries undefined'}); result=false; }
+                if(scene == undefined){ /*socket.emit('logs', {message: '///WARNING/// Scene undefined'});*/ result=false; }
+                if(camera == undefined){ /*socket.emit('logs', {message: '///WARNING/// Camera undefined'});*/ result=false; }
+                if(meshSpheres == undefined){ /*socket.emit('logs', {message: '///WARNING/// MeshSpheres undefined'});*/ result=false; }
+                if(planes == undefined){ /*socket.emit('logs', {message: '///WARNING/// Planes undefined'});*/ result=false; }
+                if(geometries == undefined){ /*socket.emit('logs', {message: '///WARNING/// Geometries undefined'});*/ result=false; }
 
                 return result;
 
